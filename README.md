@@ -174,6 +174,12 @@ noms et les dimensions :
 `php tools/generate-assets.php .` régénère les placeholders. Les couleurs
 suivent `THEME_COLOR` et `THEME_ACCENT` de la configuration.
 
+## Contribuer
+
+Issues et pull requests bienvenues. Les contraintes du projet (aucune
+dépendance, aucun build, pas de cron) et les invariants à ne pas casser sont
+dans [CONTRIBUTING.md](CONTRIBUTING.md) — à lire avant d'ouvrir une PR.
+
 ## Licence
 
 [AGPL-3.0](LICENSE). Si vous déployez une version modifiée accessible en
