@@ -1,0 +1,17 @@
+{
+    "$schema": "https://www.schemastore.org/package.json",
+    "name": "airfield-cam-site",
+    "license": "AGPL-3.0-only",
+    "private": true,
+    "type": "module",
+    "//": "npm n'existe QUE pour ce dossier. L'application, elle, reste sans dépendance ni build : rien de ce qui est installé ici n'est déployé sur l'hébergement (cf. CONTRIBUTING.md).",
+    "scripts": {
+        "predoc:dev": "node lien-modules.mjs",
+        "doc:dev": "vitepress dev .",
+        "doc:build": "vitepress build .",
+        "doc:preview": "vitepress preview ."
+    },
+    "devDependencies": {
+        "vitepress": "^1.6.4"
+    }
+}

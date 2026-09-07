@@ -32,6 +32,10 @@ php -l lib.php && php -l images.php && php -l latest.php && php -l index.php
 # .htaccess sur un vrai Apache (docroot jetable, fichiers hostiles dans snap/,
 # nominal + sans mod_headers + sans mod_rewrite). Sortie 0 si tout passe.
 tools/test-htaccess.sh
+
+# Site de documentation (npm N'EXISTE QUE ici ; jamais à la racine)
+npm --prefix site install
+./site/build-local.sh --serve   # construit _site/, sert sur :8080
 ```
 
 Pas de build. Vérification = serveur dev + curl (`images.php` → JSON,
@@ -56,6 +60,14 @@ par git).
   charge `config.php` s'il existe, sinon ce fichier.
 - `index.php` — page unique, deux modes (Live / Timelapse) pilotés en JS,
   en-têtes de sécurité (CSP same-origin, inline autorisé).
+- `site/` — vitrine HTML/CSS écrite à la main (`/`) + documentation VitePress
+  (`/doc/`), publiées sur https://airfield-cam.ratelet.fr par
+  `.github/workflows/pages.yml`. **Seul endroit du dépôt avec npm et un
+  build** ; jamais déployé sur l'hébergement. Les Markdown ne bougent pas :
+  VitePress les lit sur place (`srcDir: '..'`), donc **aucune duplication de
+  contenu** — ne jamais recopier un document dans `site/`. Le build échoue sur
+  lien mort : renommer un `.md` casse la publication. Les liens vers du code
+  (non publié) s'écrivent en URL absolues GitHub.
 
 Invariants à ne pas casser :
 
