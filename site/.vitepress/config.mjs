@@ -1,5 +1,11 @@
+import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitepress'
+
+// Le domaine vit dans site/CNAME — le fichier que lit GitHub Pages — et nulle part ailleurs ici.
+// Le déclarer une seconde fois exposerait à ce qu'un sitemap continue d'annoncer un hôte mort
+// après un changement de sous-domaine, sans que rien n'échoue.
+const domaine = readFileSync(new URL('../CNAME', import.meta.url), 'utf8').trim()
 
 export default defineConfig({
   title: 'Airfield Cam',
@@ -57,7 +63,7 @@ export default defineConfig({
   // visent n'ont pas été mis à jour.
   // ignoreDeadLinks: false,
 
-  sitemap: { hostname: 'https://airfield-cam.ratelet.fr/' },
+  sitemap: { hostname: `https://${domaine}/` },
 
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/assets/favicon.svg' }],

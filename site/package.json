@@ -8,6 +8,7 @@
     "scripts": {
         "predoc:dev": "node lien-modules.mjs",
         "doc:dev": "vitepress dev .",
+        "predoc:build": "node lien-modules.mjs",
         "doc:build": "vitepress build .",
         "doc:preview": "vitepress preview ."
     },

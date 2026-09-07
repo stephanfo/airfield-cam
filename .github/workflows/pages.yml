@@ -35,7 +35,11 @@ permissions:
   contents: read
 
 concurrency:
-  group: pages
+  # Un groupe PAR RÉFÉRENCE, et non un groupe « pages » global : GitHub ne garde qu'un run en
+  # attente par groupe, donc un groupe unique ferait évincer le build d'une PR par celui d'une
+  # autre — la vérification des liens ne tournerait alors jamais sur la PR évincée. Les
+  # déploiements, eux, ne partent que de main : ils restent sérialisés entre eux.
+  group: pages-${{ github.ref }}
   # Annuler un déploiement Pages en vol peut laisser le site dans un état incohérent :
   # mieux vaut laisser finir.
   cancel-in-progress: false
