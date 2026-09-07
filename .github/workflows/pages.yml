@@ -28,6 +28,7 @@ on:
       - 'README.md'
       - 'CONTRIBUTING.md'
       - 'SECURITY.md'
+      - 'og-image.jpg'          # copiée dans le site comme image de partage
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
