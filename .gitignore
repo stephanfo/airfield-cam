@@ -1,0 +1,25 @@
+# Images poussées par la caméra (FTP). Tout le contenu de snap/ est ignoré,
+# pas seulement les dossiers AAAA/MM/JJ : un fichier déposé à plat ne doit
+# pas non plus se retrouver commité.
+/snap/*
+!/snap/.gitkeep
+
+# Configuration locale de l'instance (copie de config.example.php).
+/config.php
+
+# Assets de marque de votre instance. Les images à la racine (logo.png,
+# og-image.jpg, favicon.png, apple-touch-icon.png) sont des placeholders
+# génériques : remplacez-les par les vôtres, et gardez vos originaux ici
+# plutôt que dans le dépôt — ils ne sont pas couverts par la licence du code.
+/brand/
+
+# Outils de développement locaux.
+.claude/
+
+# Fichiers système et de travail.
+.DS_Store
+Thumbs.db
+*.bak
+*.orig
+*.swp
+*~

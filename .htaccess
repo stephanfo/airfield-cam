@@ -1,0 +1,131 @@
+# =============================================================================
+# Webcam — configuration Apache (fichier unique, à la racine de l'app).
+#
+# ⚠️ NE PAS RÉORDONNER LES RÈGLES REWRITE (bloc plus bas). Les passthrough
+#    [L] des entrées légitimes doivent précéder la règle [F] générique qui
+#    refuse tout PHP : c'est cette règle qui empêche l'exécution d'un fichier
+#    déposé par FTP dans snap/. Voir doc/SECURITE.md §2.1.
+#
+# À ADAPTER À VOTRE INSTALLATION : trois lignes marquées « ⚠️ À ADAPTER » —
+# la directive RewriteBase et les deux ErrorDocument. Le reste fonctionne
+# tel quel. Voir doc/DEPLOIEMENT.md.
+#
+# PRÉREQUIS : mod_rewrite est obligatoire (il porte l'interdiction d'exécuter
+# du PHP dans snap/) ; mod_headers est facultatif (son absence ne coûte que
+# les en-têtes de cache).
+# =============================================================================
+
+Options -Indexes
+ServerSignature Off
+
+# Tout PHP est refusé par défaut — extensions alternatives mappées sur PHP
+# comprises, et insensible à la casse (le mapping handler Apache l'est aussi).
+<FilesMatch "(?i)\.(php\d*|phtml|phar|pht)$">
+    Require all denied
+</FilesMatch>
+
+# ...sauf les trois points d'entrée. Un nouveau point d'entrée PHP doit être
+# ajouté ici, sinon 403 en prod.
+# NE PAS y ajouter config.php ni lib.php : ce ne sont pas des points d'entrée,
+# et config.php contient la configuration de l'instance.
+<FilesMatch "^(index|latest|images)\.php$">
+    Require all granted
+</FilesMatch>
+
+# Documentation et fichiers de service : non servis.
+<FilesMatch "(?i)\.(md|gitignore|htaccess)$">
+    Require all denied
+</FilesMatch>
+
+# ⚠️ CE BLOC N'EST VOLONTAIREMENT PAS ENVELOPPÉ DANS <IfModule mod_rewrite.c>.
+#    mod_rewrite n'est pas ici un confort : c'est lui qui interdit d'exécuter
+#    un PHP déposé dans snap/, et la liste blanche FilesMatch plus haut ne
+#    peut pas le remplacer — elle matche le NOM du fichier, jamais le chemin,
+#    donc elle accorde `snap/AAAA/MM/JJ/index.php` comme elle accorde
+#    `/index.php`.
+#
+#    Mesuré sur Apache 2.4 sans mod_rewrite, avec le bloc enveloppé :
+#      snap/2026/06/11/index.php     -> 200  (au lieu de 403)
+#      snap/2026/06/11/evil.php.jpg  -> 200  (au lieu de 403)
+#      snap/2026/06/11/notes.txt     -> 200  (au lieu de 403)
+#    Envelopper échangerait donc une panne bruyante contre trois trous
+#    silencieux dans la zone d'écriture de la caméra.
+#
+#    Sans mod_rewrite, l'app renvoie 500 sur tout, et le log Apache dit
+#    « Invalid command 'RewriteEngine' ». C'est le comportement voulu :
+#    fermé, et diagnostiquable. Voir doc/DEPLOIEMENT.md §3.
+RewriteEngine On
+
+# ⚠️ À ADAPTER : chemin depuis la racine du site jusqu'à cette app.
+#    App dans un sous-dossier /webcam/ → RewriteBase /webcam/
+#    App à la racine du domaine       → RewriteBase /
+RewriteBase /webcam/
+
+# --- Ordre significatif : ne pas réordonner (voir en-tête du fichier) -------
+
+# Dépôt git jamais servi (sinon /.git/HEAD permet de reconstruire les sources).
+RewriteRule ^\.git - [F,L]
+
+# Zone d'écriture de la caméra : liste blanche du contrat de nommage. Seul un
+# chemin AAAA/MM/JJ/<prefixe>_<canal>_<horodatage>.jpg est servi ; tout le
+# reste est refusé, quelle que soit l'extension.
+#
+# La condition porte sur le nom COMPLET et pas seulement sur le suffixe .jpg.
+# Un simple `!\.jpg$` laisserait passer `evil.php.jpg` : sur un serveur
+# configuré en `AddHandler application/x-httpd-php .php` — courant en
+# mutualisé — Apache mappe sur PHP dès qu'une extension .php apparaît, pas
+# seulement la dernière. Le fichier serait alors exécuté, et la règle [F]
+# générique plus bas ne l'attrape pas (elle est ancrée en fin de nom).
+RewriteCond %{REQUEST_URI} !^.*/snap/\d{4}/\d{2}/\d{2}/[A-Za-z0-9_-]+_\d+_\d{14}\.jpg$ [NC]
+RewriteRule ^snap/. - [F,L]
+
+# URL stable pour applis tierces : latest.jpg → latest.php.
+RewriteRule ^latest\.jpg$ latest.php [L]
+
+# Passthrough des points d'entrée légitimes. DOIT rester avant la règle [F]
+# générique ci-dessous, sinon l'app entière renvoie 403.
+RewriteRule ^(index|latest|images)\.php$ - [L]
+RewriteRule ^$ - [L]
+
+# Filet de sécurité : tout autre PHP refusé, PATH_INFO inclus. Indispensable
+# car FilesMatch matche le NOM de fichier sans le chemin — sans cette règle,
+# un index.php déposé par FTP dans snap/ serait exécuté.
+RewriteRule \.(php\d*|phtml|phar|pht)(/.*)?$ - [F,L,NC]
+
+# ⚠️ À ADAPTER : erreurs renvoyées vers la page. Chemin relatif à la racine
+#    du site, à aligner sur RewriteBase (/ si l'app est à la racine du
+#    domaine). Laissées sur /webcam/, elles produisent « Additionally, a 404
+#    Not Found error was encountered while trying to use an ErrorDocument »
+#    à chaque requête refusée.
+ErrorDocument 403 /webcam/
+ErrorDocument 404 /webcam/
+
+# Ces directives-ci sont enveloppées, elles : sans mod_headers l'app perd le
+# cache long des snapshots et l'anti-cache des pages, mais aucune décision
+# d'autorisation n'en dépend (vérifié : les 403 sont identiques avec et sans
+# le module). Une dégradation vaut mieux qu'un 500 sur tout le site.
+<IfModule mod_headers.c>
+Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+Header set Pragma "no-cache"
+Header set Expires "Thu, 09 Jun 1983 01:00:00 GMT"
+Header unset X-Powered-By
+
+# Snapshots : noms horodatés, donc immuables → cache long. Le motif est
+# volontairement générique (tout <préfixe>_<canal>_<timestamp>.jpg) pour
+# rester valable quel que soit CAM_PREFIX : Apache ne lit pas la config PHP.
+# L'underscore fait partie des caractères admis dans un préfixe — le retirer
+# du motif ferait perdre le cache long aux instances qui en utilisent un.
+# Ne concerne que la mise en cache — ce qui est *servi* sous snap/ est
+# décidé par la règle rewrite plus haut.
+<FilesMatch "(?i)^[a-z0-9_-]+_\d+_\d{14}\.jpg$">
+    Header set Cache-Control "public, max-age=86400, immutable"
+    Header unset Pragma
+    Header unset Expires
+</FilesMatch>
+
+<FilesMatch "^(logo\.png|favicon\.png|apple-touch-icon\.png|og-image\.jpg)$">
+    Header set Cache-Control "public, max-age=604800"
+    Header unset Pragma
+    Header unset Expires
+</FilesMatch>
+</IfModule>

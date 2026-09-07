@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" width="480" height="300" role="img" aria-label="Webcam">
+  <title>Webcam — logo générique</title>
+
+  <!-- Placeholder neutre livré avec le projet. Remplacer par le logo de
+       votre structure (voir README). Couleurs alignées sur THEME_COLOR /
+       THEME_ACCENT de config.php. -->
+
+  <defs>
+    <linearGradient id="ciel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#045BCB"/>
+      <stop offset="100%" stop-color="#0a72f0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Ciel -->
+  <rect x="0" y="0" width="480" height="300" rx="28" fill="url(#ciel)"/>
+
+  <!-- Sol -->
+  <path d="M0 232 H480 V272 A28 28 0 0 1 452 300 H28 A28 28 0 0 1 0 272 Z" fill="#0a3f8f"/>
+
+  <!-- Piste en perspective -->
+  <path d="M182 300 L214 232 H266 L298 300 Z" fill="#e8eef7" opacity=".92"/>
+  <!-- Marquages d'axe -->
+  <g fill="#0a3f8f" opacity=".55">
+    <rect x="236" y="240" width="8" height="16" rx="2"/>
+    <rect x="235" y="264" width="10" height="18" rx="2"/>
+    <rect x="233" y="288" width="14" height="12" rx="2"/>
+  </g>
+
+  <!-- Caméra : corps -->
+  <g transform="translate(148 92)">
+    <rect x="0" y="0" width="150" height="92" rx="18" fill="#ffffff"/>
+    <!-- Pare-soleil -->
+    <path d="M150 22 L196 4 A6 6 0 0 1 204 10 V82 A6 6 0 0 1 196 88 L150 70 Z" fill="#e8eef7"/>
+    <!-- Objectif -->
+    <circle cx="62" cy="46" r="30" fill="#0a3f8f"/>
+    <circle cx="62" cy="46" r="19" fill="#045BCB"/>
+    <circle cx="55" cy="38" r="7" fill="#ffffff" opacity=".85"/>
+    <!-- Témoin d'enregistrement -->
+    <circle cx="122" cy="26" r="8" fill="#AECD47"/>
+  </g>
+
+  <!-- Support -->
+  <rect x="214" y="184" width="16" height="34" fill="#ffffff" opacity=".9"/>
+  <rect x="186" y="214" width="72" height="14" rx="7" fill="#ffffff" opacity=".9"/>
+</svg>
