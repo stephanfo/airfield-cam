@@ -62,6 +62,20 @@ touch "$OUT/.nojekyll"
 cp site/CNAME "$OUT/CNAME"
 DOMAINE=$(tr -d '[:space:]' < site/CNAME)
 
+# La vitrine n'est pas une page VitePress : elle est absente du sitemap généré. Or c'est la
+# racine du domaine, donc la seule URL dont l'indexation ne se discute pas. On l'ajoute en tête.
+python3 - "$OUT/sitemap.xml" "$DOMAINE" <<'SITEMAP'
+import pathlib, sys
+
+fichier, domaine = pathlib.Path(sys.argv[1]), sys.argv[2]
+xml = fichier.read_text(encoding='utf-8')
+accueil = f'<url><loc>https://{domaine}/</loc></url>'
+marque = '>'
+debut = xml.index('<urlset')
+insertion = xml.index(marque, debut) + 1
+fichier.write_text(xml[:insertion] + accueil + xml[insertion:], encoding='utf-8')
+SITEMAP
+
 cat > "$OUT/robots.txt" <<ROBOTS
 User-agent: *
 Allow: /
@@ -94,6 +108,12 @@ fi
 # la page d'accueil du thème, et les deux CTA seraient perdus.
 if ! grep -q 'Voir une instance en direct' "$OUT/index.html"; then
   echo "   ✗ index.html n'est pas la vitrine (index de VitePress non écrasé ?)"; fail=1
+fi
+
+# La racine doit figurer au sitemap : VitePress ne l'y met pas, c'est l'étape d'insertion
+# ci-dessus qui s'en charge — et elle dépend du format de sortie de VitePress.
+if ! grep -q "<loc>https://$DOMAINE/</loc>" "$OUT/sitemap.xml"; then
+  echo "   ✗ la vitrine n'est pas dans sitemap.xml"; fail=1
 fi
 
 [ "$fail" -eq 0 ] && echo "   ✓ tout est en place"

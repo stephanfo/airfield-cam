@@ -65,6 +65,13 @@ for f in index.php latest.php images.php lib.php config.example.php; do
 done
 echo "config d'instance" > "$APP/config.php"
 
+# Sources et sortie du site de documentation : elles se retrouvent en ligne dès
+# que le dépôt est déployé tel quel. Rien de sensible, mais rien à y faire non
+# plus — et _site/ servirait une seconde copie de la doc à une URL parallèle.
+mkdir -p "$APP/site" "$APP/_site"
+echo 'vitrine (sources)' > "$APP/site/index.html"
+echo 'vitrine (assemblée)' > "$APP/_site/index.html"
+
 # Zone d'écriture de la caméra : une image légitime, et ce qu'un compte FTP
 # compromis y déposerait. Aucun PHP n'est exécuté ici (pas de handler chargé) :
 # ce qu'on mesure est la décision d'autorisation, 200 contre 403.
@@ -137,6 +144,8 @@ attentes_nominales() {
     verifier 'lib.php'                                403 'lib.php non servi'
     verifier 'config.php'                             403 'config.php non servi'
     verifier '.htaccess'                              403 '.htaccess non servi'
+    verifier 'site/index.html'                        403 'site/ : sources du site de doc'
+    verifier '_site/index.html'                       403 '_site/ : site assemblé'
     verifier 'snap/2026/06/11/cam_01_20260611193004.jpg' 200 'image conforme au contrat'
     verifier 'snap/2026/06/11/index.php'              403 'snap/ : index.php déposé par FTP'
     verifier 'snap/2026/06/11/shell.php'              403 'snap/ : shell.php'

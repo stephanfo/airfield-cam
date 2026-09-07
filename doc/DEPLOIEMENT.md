@@ -62,8 +62,9 @@ l'hébergeur applique bien le fichier, ce qu'aucun test local ne peut dire.
 - [ ] `GET <base>config.php` → **403** ← contient votre configuration
 - [ ] `GET <base>config.example.php` → **403**
 - [ ] `GET <base>doc/SECURITE.md` → **403**
-- [ ] `GET <base>site/index.html` → **403** (si le dépôt est déployé tel quel :
-      les sources du site de documentation n'ont rien à faire en ligne)
+- [ ] `GET <base>site/index.html` → **403** et `GET <base>_site/index.html` →
+      **403** (si le dépôt est déployé tel quel : ni les sources du site de
+      documentation ni sa version assemblée n'ont à être servies ici)
 - [ ] `GET <base>.git/HEAD` → **403/404** (si le dépôt est déployé tel quel)
 - [ ] `GET <base>snap/2026/` → **403**, pas de listing de dossier
 

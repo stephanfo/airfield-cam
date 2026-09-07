@@ -110,6 +110,10 @@ suffixe `.jpg` : un `evil.php.jpg` passerait sinon, et un serveur en
 `AddHandler application/x-httpd-php .php` l'exécuterait (le mapping
 handler ne regarde pas que la dernière extension).
 
+Le même bloc de refus ferme `site/` et `_site/` (les sources et la sortie du
+site de documentation, embarquées par un déploiement du dépôt tel quel) ;
+`tools/test-htaccess.sh` couvre les deux.
+
 Conséquences : un nouveau point d'entrée PHP doit être ajouté à la liste
 blanche, sinon 403 en prod ; ne jamais mettre de code dans `snap/` ; et
 **ne pas réordonner les règles rewrite** (passthrough `[L]` des entrées

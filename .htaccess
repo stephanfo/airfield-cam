@@ -66,6 +66,13 @@ RewriteBase /webcam/
 # Dépôt git jamais servi (sinon /.git/HEAD permet de reconstruire les sources).
 RewriteRule ^\.git - [F,L]
 
+# Sources et sortie du site de documentation, jamais servies. Elles ne sont pas
+# sensibles — le dépôt est public — mais un déploiement du dépôt tel quel les
+# emporte, et rien de ce qu'elles contiennent n'a de sens ici : _site/ servirait
+# une seconde copie de la documentation à une URL parallèle. Voir
+# doc/DEPLOIEMENT.md §2.
+RewriteRule ^_?site/ - [F,L]
+
 # Zone d'écriture de la caméra : liste blanche du contrat de nommage. Seul un
 # chemin AAAA/MM/JJ/<prefixe>_<canal>_<horodatage>.jpg est servi ; tout le
 # reste est refusé, quelle que soit l'extension.
