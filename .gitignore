@@ -23,3 +23,14 @@ Thumbs.db
 *.orig
 *.swp
 *~
+
+# Site de documentation (site/) : dépendances npm et sorties de build. npm n'existe que
+# pour ce dossier — l'application, elle, reste sans dépendance ni build.
+/site/node_modules
+# Lien symbolique vers site/node_modules, posé par site/lien-modules.mjs.
+/node_modules
+/site/.vitepress/dist
+/site/.vitepress/.cache
+/site/public/img/
+/site/public/assets/og.jpg
+/_site

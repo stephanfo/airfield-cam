@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Airfield Cam — la webcam de votre terrain, en PHP et sans dépendance</title>
+<meta name="description" content="Page web libre pour une caméra qui pousse ses photos par FTP : image en direct et timelapse rejouable de la dernière heure. PHP 8, zéro dépendance, zéro build, pas de cron.">
+
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta name="theme-color" content="#045BCB">
+
+<!-- Les métadonnées de partage exigent des URL absolues : un chemin relatif ne serait pas
+     résolu par les robots de LinkedIn, Slack ou Mastodon. Le domaine doit rester celui du
+     fichier site/CNAME — site/build-local.sh vérifie que les deux concordent. -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://airfield-cam.ratelet.fr/">
+<meta property="og:title" content="Airfield Cam — la webcam de votre terrain d'aviation">
+<meta property="og:description" content="Direct et timelapse rejouable, à partir des snapshots FTP de la caméra. PHP 8, zéro dépendance, zéro build, pas de cron.">
+<meta property="og:image" content="https://airfield-cam.ratelet.fr/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<a class="skip" href="#contenu">Aller au contenu</a>
+
+<header class="topbar">
+  <!--
+    Menu sans JavaScript : une case à cocher visuellement masquée porte l'état ouvert/fermé,
+    et le label lui sert de bouton. Fonctionne partout, y compris si le script ne charge pas,
+    et reste accessible au clavier — la case est focusable et se coche à la barre d'espace.
+    La page entière ne charge aucun script : c'est la même sobriété que l'application.
+  -->
+  <input type="checkbox" id="menu" class="menu-state">
+  <div class="topbar-in">
+    <a class="brand" href="/" aria-label="Airfield Cam, accueil">
+      <img src="/assets/logo-blanc.svg" alt="" width="34" height="34">
+      <span>Airfield&nbsp;Cam</span>
+    </a>
+
+    <label for="menu" class="burger" aria-label="Ouvrir le menu">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </label>
+
+    <nav>
+      <a href="#fonctionnalites">Fonctionnalités</a>
+      <a href="#apercu">Aperçu</a>
+      <a href="#fonctionnement">Fonctionnement</a>
+      <a href="/doc/">Documentation</a>
+      <a href="https://github.com/stephanfo/airfield-cam">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="contenu">
+
+  <section class="hero">
+    <div class="wrap">
+      <p class="tagline">La météo du terrain, en un coup d'œil avant de partir.</p>
+      <h1>La webcam de votre terrain d'aviation.</h1>
+      <p class="lead">
+        Votre caméra pousse déjà ses photos par FTP&nbsp;? Cette page les affiche&nbsp;: la
+        dernière image en direct, et le <strong>timelapse rejouable de la dernière heure</strong>
+        pour voir d'où vient le temps. Rien à compiler, rien à administrer.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="https://aeroclub-ancenis.fr/webcam/">Voir une instance en direct</a>
+        <a class="btn btn-ghost" href="/README">Installer chez soi</a>
+      </div>
+      <p class="hero-note">
+        PHP&nbsp;8, zéro dépendance, zéro build, pas de cron. On dépose les fichiers sur un
+        hébergement mutualisé et ça tourne. Libre, sous licence AGPL-3.0.
+      </p>
+    </div>
+  </section>
+
+  <section id="fonctionnalites" class="alt">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Fonctionnalités</span>
+        <h2>Quatre choses, bien faites.</h2>
+        <p class="section-lead">
+          Le périmètre est volontairement court&nbsp;: ni comptes utilisateurs, ni flux vidéo
+          temps réel, ni détection de mouvement. Ce que fait la page, elle le fait sans réglage.
+        </p>
+      </div>
+
+      <ul class="cards">
+        <li class="card">
+          <h3>Direct</h3>
+          <p>
+            La dernière image reçue, rafraîchie toute seule, avec un bandeau d'alerte explicite
+            si la caméra se tait. On ouvre la page, on sait.
+          </p>
+        </li>
+        <li class="card">
+          <h3>Timelapse</h3>
+          <p>
+            La dernière heure rejouée en accéléré&nbsp;: lecture/pause, vitesses ×1 à ×8,
+            navigation image par image, curseur. Vitesse et boucle sont mémorisées d'une visite
+            à l'autre.
+          </p>
+        </li>
+        <li class="card">
+          <h3>URL stable</h3>
+          <p>
+            <code>latest.jpg</code> renvoie toujours l'image la plus récente&nbsp;: de quoi
+            l'afficher dans une appli tierce, un écran d'accueil de club ou un tableau de bord.
+          </p>
+        </li>
+        <li class="card">
+          <h3>Ménage automatique</h3>
+          <p>
+            Les images au-delà de la rétention sont supprimées à la volée, pendant les requêtes.
+            <strong>Sans cron</strong>&nbsp;: le disque d'un mutualisé ne se remplit pas.
+          </p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="apercu">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Aperçu</span>
+        <h2>Deux modes, une seule page.</h2>
+        <p class="section-lead">
+          Interface sobre et responsive, faite main, sans framework. Thème clair ou sombre selon
+          le réglage du système.
+        </p>
+      </div>
+
+      <figure class="shot">
+        <img src="/img/live.jpg" alt="Mode Live : la dernière image de la caméra, avec son horodatage et les boutons de rafraîchissement et de téléchargement." loading="lazy">
+        <figcaption><strong>Live</strong> — la dernière image, son heure de prise de vue, et le téléchargement à nom horodaté.</figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="/img/timelapse.jpg" alt="Mode Timelapse : le rejeu de la dernière heure, avec curseur de navigation, contrôles de lecture et sélecteur de vitesse." loading="lazy">
+        <figcaption><strong>Timelapse</strong> — le rejeu de la dernière heure, avec les contrôles de lecture et le curseur de navigation.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="fonctionnement" class="alt">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Fonctionnement</span>
+        <h2>La caméra dépose, PHP affiche.</h2>
+        <p class="section-lead">
+          Aucune base de données&nbsp;: l'arborescence des fichiers <em>est</em> la base de
+          données, et le nom du fichier porte l'heure de la prise de vue.
+        </p>
+      </div>
+
+      <ol class="steps">
+        <li>
+          <h3>La caméra pousse en FTP</h3>
+          <p>
+            Un snapshot toutes les ~30&nbsp;secondes, dans <code>snap/AAAA/MM/JJ/</code>. Testé
+            avec une Reolink&nbsp;; toute caméra respectant le format convient.
+          </p>
+        </li>
+        <li>
+          <h3>Le nom du fichier fait foi</h3>
+          <p>
+            <code>cam_01_20260611193004.jpg</code>&nbsp;: l'heure affichée vient de <em>là</em>,
+            jamais de la date système du fichier, faussée par l'upload. Un fichier hors format
+            est ignoré en silence — c'est la première chose à vérifier si la page reste vide.
+          </p>
+        </li>
+        <li>
+          <h3>PHP sert, et fait le ménage</h3>
+          <p>
+            La page lit le dossier du jour, sert la dernière image et la liste de la fenêtre
+            courante. Au passage, elle supprime ce qui a dépassé la rétention&nbsp;: pas de cron
+            à demander à l'hébergeur.
+          </p>
+        </li>
+      </ol>
+
+      <div class="cta-inline">
+        <a class="btn btn-outline" href="/doc/TECHNIQUE">Lire la documentation technique</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="installer">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Installer</span>
+        <h2>Ce qu'il faut avoir sous la main.</h2>
+      </div>
+
+      <ul class="checks">
+        <li><strong>PHP 8.0+</strong> — n'importe quel hébergement mutualisé récent.</li>
+        <li>
+          <strong>Apache avec <code>mod_rewrite</code></strong> — le <code>.htaccess</code> fourni
+          porte l'essentiel de la sécurité&nbsp;; sans lui, l'application refuse délibérément de
+          démarrer plutôt que de s'ouvrir.
+        </li>
+        <li><strong>Une caméra</strong> capable de pousser des JPEG horodatés par FTP.</li>
+        <li><strong>Pas de Composer, pas de npm, pas de base, pas de cron.</strong></li>
+      </ul>
+
+      <div class="warn">
+        <h3>Le dossier <code>snap/</code> est une zone d'écriture partiellement hors de votre contrôle</h3>
+        <p>
+          C'est la caméra qui y dépose des fichiers, par FTP. Le <code>.htaccess</code> livré
+          n'y sert qu'un chemin conforme au contrat de nommage, et refuse l'exécution de tout PHP
+          qui s'y trouverait — extensions alternatives et casse comprises. Le raisonnement complet,
+          et la checklist à dérouler une fois en ligne, sont dans la documentation.
+        </p>
+        <p class="warn-cta">
+          <a href="/doc/SECURITE">Revue de sécurité</a> ·
+          <a href="/doc/DEPLOIEMENT">Checklist de mise en production</a>
+        </p>
+      </div>
+
+      <div class="cta-inline">
+        <a class="btn btn-primary" href="/README">Installer chez soi</a>
+        <a class="btn btn-outline" href="https://github.com/stephanfo/airfield-cam">Voir le code sur GitHub</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <p class="footer-brand">Airfield&nbsp;Cam</p>
+    <nav class="footer-nav">
+      <a href="/doc/">Documentation</a>
+      <a href="/README">Installation</a>
+      <a href="/CONTRIBUTING">Contribuer</a>
+      <a href="/SECURITY">Sécurité</a>
+      <a href="https://github.com/stephanfo/airfield-cam">GitHub</a>
+    </nav>
+    <p class="footer-note">
+      Publié sous licence <a href="https://github.com/stephanfo/airfield-cam/blob/main/LICENSE">AGPL-3.0</a>.
+      Les logos et marques que vous substituez aux images placeholder restent votre propriété.
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -55,7 +55,8 @@ la main — c'est ce qui remplace la suite de tests.
 
 ## Les invariants à ne pas casser
 
-Ils sont expliqués dans [CLAUDE.md](CLAUDE.md) et
+Ils sont expliqués dans
+[CLAUDE.md](https://github.com/stephanfo/airfield-cam/blob/main/CLAUDE.md) et
 [doc/TECHNIQUE.md](doc/TECHNIQUE.md). Les trois qui se cassent le plus
 facilement sans que rien n'échoue visiblement :
 
@@ -67,10 +68,30 @@ facilement sans que rien n'échoue visiblement :
 - **L'ancre du ménage est bornée à l'heure courante.** Sans ce `min`, une
   horloge caméra en avance efface tout l'historique.
 
+## Le site de documentation
+
+`site/` est le **seul** endroit du dépôt où vivent npm et un build : il produit
+<https://airfield-cam.ratelet.fr> à partir des Markdown du dépôt, qui ne sont
+jamais recopiés. Rien de ce qui est installé là n'est déployé sur
+l'hébergement, et la règle « aucune dépendance, aucun build » reste entière
+pour l'application. Une PR qui remonte une dépendance npm à la racine sera
+refusée.
+
+```bash
+npm --prefix site install       # une fois
+./site/build-local.sh --serve   # construit _site/ et sert sur :8080
+```
+
+Le build **échoue sur lien mort** : c'est le seul test automatisé du site.
+Conséquence pratique — renommer ou supprimer un `.md` casse la publication tant
+que les liens qui le visent n'ont pas suivi. Les liens vers du code
+(`config.example.php`, `LICENSE`, `.htaccess`) sont écrits en URL absolues
+GitHub : le site ne publie que du Markdown, un lien relatif y serait mort.
+
 ## Commits et pull requests
 
 Messages en français, à l'impératif, qui disent **pourquoi** plutôt que
 quoi — le diff dit déjà quoi. Une pull request traite un sujet.
 
 En contribuant, vous acceptez que votre travail soit publié sous
-[AGPL-3.0](LICENSE).
+[AGPL-3.0](https://github.com/stephanfo/airfield-cam/blob/main/LICENSE).

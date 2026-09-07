@@ -1,9 +1,13 @@
-# Webcam
+# Airfield Cam
 
 Page web pour une caméra qui pousse ses photos par FTP : image en direct et
 timelapse de la dernière heure, rejouable. Conçue pour un aéroclub — la
 page publique d'un terrain d'aviation — mais rien n'est spécifique à
 l'aéronautique.
+
+**Documentation en ligne :** <https://airfield-cam.ratelet.fr> —
+**Voir en vrai :** [la webcam de l'Aéroclub du Pays
+d'Ancenis](https://aeroclub-ancenis.fr/webcam/)
 
 ![Vue Live](doc/screenshot/live.jpg)
 
@@ -89,8 +93,9 @@ préfixé horodaté. Sur les Reolink, ces trois réglages sont dans
 
 ## Configuration
 
-Tout est dans [`config.example.php`](config.example.php), documenté ligne à
-ligne. Les réglages les plus utiles :
+Tout est dans
+[`config.example.php`](https://github.com/stephanfo/airfield-cam/blob/main/config.example.php),
+documenté ligne à ligne. Les réglages les plus utiles :
 
 | Constante | Défaut | Rôle |
 |---|---|---|
@@ -154,6 +159,10 @@ php -l lib.php               # lint (pas de tests automatisés)
 En dev, utiliser `latest.php` — la réécriture vers `latest.jpg` est assurée
 par Apache, que `php -S` n'utilise pas.
 
+Le site de documentation (`site/`) est le **seul** endroit du dépôt où vivent
+npm et un build ; il ne concerne pas l'application et n'est jamais déployé sur
+l'hébergement. Voir [CONTRIBUTING.md](CONTRIBUTING.md).
+
 Pour disposer d'images de test, déposer quelques JPEG dans
 `snap/AAAA/MM/JJ/` en respectant le format de nom, avec des horodatages
 dans la fenêtre courante.
@@ -182,8 +191,9 @@ dans [CONTRIBUTING.md](CONTRIBUTING.md) — à lire avant d'ouvrir une PR.
 
 ## Licence
 
-[AGPL-3.0](LICENSE). Si vous déployez une version modifiée accessible en
-ligne, vous devez en publier le code source.
+[AGPL-3.0](https://github.com/stephanfo/airfield-cam/blob/main/LICENSE).
+Si vous déployez une version modifiée accessible en ligne, vous devez en
+publier le code source.
 
 Les images placeholder sont couvertes par cette licence. **Les logos et
 marques que vous y substituez ne le sont pas** — ils restent votre

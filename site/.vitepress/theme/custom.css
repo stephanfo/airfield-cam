@@ -1,0 +1,79 @@
+/* ============================================================================
+   Thème de la documentation — Airfield Cam
+   ----------------------------------------------------------------------------
+   La palette est celle de l'application : THEME_COLOR (#045BCB) et THEME_ACCENT
+   (#AECD47) de config.example.php, les mêmes valeurs que celles dont dérivent
+   le logo et les images placeholder régénérées par tools/generate-assets.php.
+
+   L'accent vert tient ~1,8:1 sur blanc : il ne porte JAMAIS de texte. Filets,
+   fonds et pastilles uniquement.
+   ============================================================================ */
+
+:root {
+  --ac-brand-50: #eaf2fd;
+  --ac-brand-100: #cfe1fb;
+  --ac-brand-300: #6ea6f2;
+  --ac-brand-400: #3d86ec;
+  --ac-brand-500: #0a72f0;
+  --ac-brand: #045bcb;
+  --ac-brand-700: #0a3f8f;
+  --ac-brand-900: #062a5f;
+
+  --ac-accent: #aecd47;
+
+  --ac-ink: #0d1117;
+  --ac-paper: #ffffff;
+}
+
+/* --- Mapping sur les variables de VitePress ----------------------------
+   `brand-1` sert au TEXTE des liens : il doit passer AA sur fond clair comme
+   sur fond sombre. #045BCB tient ~7:1 sur blanc ; en sombre, on remonte
+   l'échelle jusqu'à #6EA6F2 (~7:1 sur le fond sombre de VitePress).
+   `brand-3`, non textuel, porte la couleur vive. */
+:root {
+  --vp-c-brand-1: var(--ac-brand);
+  --vp-c-brand-2: var(--ac-brand-700);
+  --vp-c-brand-3: var(--ac-brand-500);
+  --vp-c-brand-soft: var(--ac-brand-100);
+
+  --vp-font-family-base: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --vp-font-family-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.dark {
+  --vp-c-brand-1: var(--ac-brand-300);
+  --vp-c-brand-2: var(--ac-brand-400);
+  --vp-c-brand-3: var(--ac-brand-500);
+  --vp-c-brand-soft: rgba(10, 114, 240, 0.16);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  letter-spacing: -0.02em;
+}
+
+/* Les captures de doc/screenshot/ apparaissent dans le README, servi ici comme
+   page d'installation : elles doivent se réduire sur mobile sans se déformer. */
+.vp-doc img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* Le corpus est très tabulaire (constantes de configuration, endpoints,
+   checklists de déploiement). Ces tableaux débordent sur téléphone : ils
+   doivent défiler dans leur propre conteneur, jamais faire défiler la page. */
+.vp-doc div[class*='table'],
+.vp-doc table {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+/* Le seul emploi de l'accent : le filet des blocs de citation, utilisés dans le
+   corpus pour les avertissements (« ne pas réordonner les règles rewrite »). */
+.vp-doc blockquote {
+  border-left-color: var(--ac-accent);
+}
